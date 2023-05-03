@@ -1,0 +1,28 @@
+name: Python package
+
+on:
+  - push
+  - pull_request
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ['3.9'] #, '3.10', '3.11'
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v4
+      with:
+        python-version: ${{ matrix.python-version }}
+    - name: Install dependencies
+      run: |
+        python -m pip install -r requirements.txt
+        python -m pip install -r requirements_dev.txt
+    - name: Test with pytest
+      run: pytest
+    # 2023-01-11 - tox broken, give it few weeks, update libs and try again
+    # - name: Test with tox
+    #   run: poetry run tox
